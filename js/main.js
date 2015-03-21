@@ -20,24 +20,59 @@ function initialize() {
 google.maps.event.addDomListener(window, 'load', initialize);
 
 
-var model = [
-  {
-    name: "My Favorite Restaurant",
-    LatLng: ["48.1484973", "11.5727348"]
-  },
+var initialPlaces = [
+{
+  name: "Bohemian Biergarten",
+  LatLng: [48.1484973, 11.5727348]
+},
 
-  {
-    name: "My Other Favorite Restaurant",
-    LatLng: ["49.1484973", "11.5727348"]
-  },
+{
+  name: "Lazy Dog",
+  LatLng: [48.1484973, 11.5727348]
+},
 
-  {
-    name: "Boulder Theater",
-    LatLng: ["40.0191931", "-105.2772349"]
+{
+  name: "License #1",
+  LatLng: [48.1484973, 11.5727348]
+},
 
-  }
+{
+  name: "The Sundown Saloon",
+  LatLng: [48.1484973, 11.5727348]
+},
+
+{
+  name: "Boulder Theater",
+  LatLng: [48.1484973, 11.5727348]
+}
 ];
 
-var Location = function() {
+
+var Location = function(data) {
+  this.name = data.name;
+  this.lat = data.LatLng[0];
+  this.lng = data.LatLng[1];
+};
+
+
+var ViewModel =  function() {
+
+  var self = this;
+
+  this.placeList = ko.observableArray([]);
+
+  initialPlaces.forEach(function(placeItem) {
+    self.placeList.push(new Location(placeItem) );
+  });
+
+  this.doSomething = function(place){
+    console.log(place.name);
+  }
+
+
 
 };
+
+ko.applyBindings(new ViewModel());
+
+

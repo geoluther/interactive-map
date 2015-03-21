@@ -11,6 +11,7 @@
     <!-- Place favicon.ico in the root directory -->
 
     <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/normalize.css">
     <link rel="stylesheet" href="css/main.css">
 
     <script src="http://maps.googleapis.com/maps/api/js"></script>
@@ -25,24 +26,29 @@
             <!-- Add your site or application content here -->
             <div class="container">
                 <div class="row">
-                    <div class="col-sm-12 text-center">
-                        <h1>Hello world!</h1>
-                        <p>Lorem Ipsum Text</p>
+
+                    <div class="col-sm-9 text-center">
+                        <h1>Hello Map!</h1>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-sm-3">
+                        <p>Search Block Here</p>
                     </div>
                 </div>
 
                 <div class="row">
 
-                    <div class="col-sm-2">
-                    <h4>List Goes Here</h4>
-                    <ul>
-                        <li>list item</li>
-                        <li>list item</li>
-                        <li>list item</li>
+                    <div class="col-sm-3">
+                    <h4>Your Places</h4>
+                    <ul data-bind="foreach: placeList">
+                        <li class="place-list" data-bind="text: name, click: $parent.doSomething"></li>
                     </ul>
+
                     </div>
 
-                    <div class="col-sm-10">
+                    <div class="col-sm-9">
                         <div id="googleMap" style="width:600px;height:400px;"></div>
                     </div>
                 </div>
