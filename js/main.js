@@ -1,10 +1,10 @@
 
-var myCenter = new google.maps.LatLng(48.1484973,11.5727348);
+var myCenter = new google.maps.LatLng(40.019059,-105.277234);
 
 function initialize() {
   var mapProp = {
     center: myCenter,
-    zoom: 5,
+    zoom: 16,
     mapTypeId: google.maps.MapTypeId.ROADMAP
   };
 
@@ -19,31 +19,30 @@ function initialize() {
 
 google.maps.event.addDomListener(window, 'load', initialize);
 
-
 var initialPlaces = [
 {
   name: "Bohemian Biergarten",
-  LatLng: [48.1484973, 11.5727348]
+  LatLng: [40.0187011,-105.2792224]
 },
 
 {
-  name: "Lazy Dog",
-  LatLng: [48.1484973, 11.5727348]
+  name: "Mountain Sun",
+  LatLng: [40.019059,-105.277234]
 },
 
 {
   name: "License #1",
-  LatLng: [48.1484973, 11.5727348]
+  LatLng: [40.019416,-105.2794457]
 },
 
 {
-  name: "The Sundown Saloon",
-  LatLng: [48.1484973, 11.5727348]
+  name: "The Black Cat Bistro",
+  LatLng: [40.0178096,-105.2789281]
 },
 
 {
   name: "Boulder Theater",
-  LatLng: [48.1484973, 11.5727348]
+  LatLng: [40.019059,-105.277234]
 }
 ];
 
@@ -54,12 +53,12 @@ var Location = function(data) {
   this.lng = data.LatLng[1];
 };
 
-
 var ViewModel =  function() {
 
   var self = this;
 
   this.placeList = ko.observableArray([]);
+  this.searchString = ko.observable("");
 
   initialPlaces.forEach(function(placeItem) {
     self.placeList.push(new Location(placeItem) );
@@ -68,8 +67,6 @@ var ViewModel =  function() {
   this.doSomething = function(place){
     console.log(place.name);
   }
-
-
 
 };
 
