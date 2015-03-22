@@ -1,9 +1,10 @@
 
 
 
-function initialize() {
+function initialize(currentPlace) {
 
-  var myCenter = new google.maps.LatLng(40.019059,-105.277234);
+  var myCenter = new google.maps.LatLng(currentPlace.lat, currentPlace.lng);
+
   var mapProp = {
     center: myCenter,
     zoom: 16,
@@ -72,17 +73,23 @@ var ViewModel =  function() {
     self.placeList.push(new Location(placeItem) );
   });
 
+  this.currentPlace = ko.observable(this.placeList()[0]);
+
+  console.log(this.currentPlace().name);
+
   this.fliteredItems = ko.computed(function() {
         var re = new RegExp(this.searchString(), "i");
         console.log(re);
-        console.log(this.searchString());
     }, this);
 
-  this.doSomething = function(place){
-    console.log(place.name);
+  this.doSomething = function(place) {
+    self.currentPlace(place);
+    console.log("Name: " + place.name);
+    console.log("Curent: " + self.currentPlace().name);
+
   }
 
-  google.maps.event.addDomListener(window, 'load', initialize);
+  google.maps.event.addDomListener(window, 'load', initialize(this.currentPlace()) );
 
 };
 
