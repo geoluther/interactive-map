@@ -77,7 +77,7 @@ var ViewModel =  function() {
 
   console.log(this.currentPlace().name);
 
-  this.fliteredItems = ko.computed(function() {
+  this.filteredItems = ko.computed(function() {
         var re = new RegExp(this.searchString(), "i");
         console.log(re);
     }, this);
