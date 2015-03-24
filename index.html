@@ -42,8 +42,13 @@
                 <div class="row">
 
                     <div class="col-sm-3">
-                    <h4>Your Places</h4>
+                    <h4>All Places</h4>
                     <ul data-bind="foreach: placeList">
+                        <li class="place-list" data-bind="text: name, click: $parent.doSomething"></li>
+                    </ul>
+
+                    <h4>Filtered Places</h4>
+                    <ul data-bind="foreach: filteredItems">
                         <li class="place-list" data-bind="text: name, click: $parent.doSomething"></li>
                     </ul>
 

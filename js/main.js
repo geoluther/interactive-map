@@ -66,21 +66,33 @@ var ViewModel =  function() {
 
   var self = this;
 
-  this.placeList = ko.observableArray([]);
-  this.searchString = ko.observable("");
+  self.placeList = ko.observableArray([]);
+  self.searchString = ko.observable("");
 
   initialPlaces.forEach(function(placeItem) {
     self.placeList.push(new Location(placeItem) );
   });
 
-  this.currentPlace = ko.observable(this.placeList()[0]);
+  self.currentPlace = ko.observable(self.placeList()[0]);
 
-  console.log(this.currentPlace().name);
+  console.log(self.currentPlace().name);
 
-  this.filteredItems = ko.computed(function() {
-        var re = new RegExp(this.searchString(), "i");
+  self.filteredItems = ko.computed(function() {
+
+        this.results =  ko.observableArray([]);
+        var re = new RegExp(self.searchString(), "i");
         console.log(re);
-    }, this);
+
+          for (var i = 0; i < self.placeList().length ; i++) {
+            if ( re.test(self.placeList()[i].name) ) {
+              this.results.push(self.placeList()[i]);
+            }
+            console.log( this.results() );
+          }
+         return this.results();
+    });
+
+
 
   this.doSomething = function(place) {
     self.currentPlace(place);
@@ -89,7 +101,7 @@ var ViewModel =  function() {
 
   }
 
-  google.maps.event.addDomListener(window, 'load', initialize(this.currentPlace()) );
+  google.maps.event.addDomListener(window, 'load', initialize(self.currentPlace()) );
 
 };
 
