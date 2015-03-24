@@ -13,6 +13,7 @@ function initialize(currentPlace) {
 
   var map = new google.maps.Map(document.getElementById("googleMap"),mapProp);
 
+
   for (var i = 0; i < initialPlaces.length; i++) {
 
     var name = initialPlaces[i].name;
@@ -46,7 +47,7 @@ var initialPlaces = [
 
   {
     name: "The Black Cat Bistro",
-    LatLng: [40.018012,-105.2781439]
+    LatLng: [40.01786,-105.278416]
   },
 
   {
@@ -77,13 +78,14 @@ var ViewModel =  function() {
 
   console.log(self.currentPlace().name);
 
+  
   self.filteredItems = ko.computed(function() {
 
         this.results =  ko.observableArray([]);
         var re = new RegExp(self.searchString(), "i");
         console.log(re);
 
-          for (var i = 0; i < self.placeList().length ; i++) {
+          for (var i = 0; i < self.placeList().length; i++) {
             if ( re.test(self.placeList()[i].name) ) {
               this.results.push(self.placeList()[i]);
             }
@@ -102,6 +104,7 @@ var ViewModel =  function() {
   }
 
   google.maps.event.addDomListener(window, 'load', initialize(self.currentPlace()) );
+  //addMarkers();
 
 };
 
