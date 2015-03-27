@@ -47,8 +47,8 @@
                         <li class="place-list" data-bind="text: name, click: $parent.doSomething"></li>
                     </ul>
 
-                    <h4>Filtered Places</h4>
-                    <ul data-bind="foreach: filteredItems">
+                   <h4>Filtered Observable Array</h4>
+                    <ul data-bind="foreach: placeListOb">
                         <li class="place-list" data-bind="text: name, click: $parent.doSomething"></li>
                     </ul>
 
