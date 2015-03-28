@@ -28,12 +28,12 @@ var initialPlaces = [
 
 var map;
 
-function initialize(currentPlace) {
+function initialize() {
 
-  var myCenter = ko.observable(new google.maps.LatLng(currentPlace.lat, currentPlace.lng));
+  var myCenter = new google.maps.LatLng(initialPlaces[0].LatLng[0], initialPlaces[0].LatLng[1]);
 
   var mapProp = {
-    center: myCenter(),
+    center: myCenter,
     zoom: 16,
     mapTypeId: google.maps.MapTypeId.ROADMAP
   };
@@ -42,43 +42,31 @@ function initialize(currentPlace) {
 
 }
 
-var addMarkers = function(items) {
-  for (var i = 0; i < items.length; i++) {
-    var name = items[i].name;
-    var lat =  items[i].lat;
-    var lng =  items[i].lng;
-    console.log("marker loop name: " + name);
-    var myLatLng  = new google.maps.LatLng(lat, lng);
+function Marker(data) {
 
-    var marker = new google.maps.Marker({
-      position: myLatLng,
-      map: map,
-      title: name,
-    });
-  }
+  this.name = data.name;
+  this.lat = data.lat;
+  this.lng = data.lng;
+
+  this.myLatLng  = new google.maps.LatLng(this.lat, this.lng);
+
+  var marker = new google.maps.Marker({
+    position: this.myLatLng,
+    map: map,
+    title: this.name,
+  });
+  console.log(marker)
 }
 
-var Marker = function(item) {
-    var name = item.name;
-    var lat =  items.lat;
-    var lng =  items.lng;
+function Location(data) {
 
-    var myLatLng  = new google.maps.LatLng(lat, lng);
-
-    var marker = new google.maps.Marker({
-      position: myLatLng,
-      map: map,
-      title: name,
-    });
-  }
-
-var Location = function(data) {
   this.name = data.name;
   this.lat = data.LatLng[0];
   this.lng = data.LatLng[1];
-};
 
-var ViewModel =  function() {
+}
+
+var ViewModel = function() {
 
   var self = this;
 
@@ -87,38 +75,37 @@ var ViewModel =  function() {
   self.searchString = ko.observable("");
 
   initialPlaces.forEach(function(placeItem) {
-    self.placeList.push(new Location(placeItem) );
+    self.placeList.push(new Location(placeItem));
   });
 
   self.currentPlace = ko.observable(self.placeList()[0]);
   console.log(self.currentPlace().name);
 
   self.placeListOb = ko.computed(function() {
-    this.results =  [];
+    this.results =  ko.observableArray([]);
     var re = new RegExp(self.searchString(), "i");
       //console.log(re);
       for (var i = 0; i < self.placeList().length; i++) {
         if ( re.test(self.placeList()[i].name) ) {
-          this.results.push(self.placeList()[i]);
+          self.results.push(new Marker(self.placeList()[i] ) );
         }
-        console.log( this.results );
+        console.log( this.results() );
       }
-      return this.results;
-    }, this);
+      return this.results();
+    }, self);
 
 
-  this.doSomething = function(place) {
+
+  self.doSomething = function(place) {
     self.currentPlace(place);
     console.log("Name: " + place.name);
     console.log("Curent: " + self.currentPlace().name);
   };
 
-  
-  google.maps.event.addDomListener(window, 'load', initialize(self.currentPlace() ));
-  addMarkers(self.placeListOb());
+
 };
 
-
+google.maps.event.addDomListener(window, 'load', initialize());
 ko.applyBindings(new ViewModel());
 
 
