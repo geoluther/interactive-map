@@ -55,7 +55,7 @@ function Marker(data) {
     title: this.name,
   });
 
-  console.log(marker)
+  // console.log(marker)
 }
 
 function Location(data) {
@@ -64,15 +64,25 @@ function Location(data) {
   this.lat = data.LatLng[0];
   this.lng = data.LatLng[1];
 
+  this.myLatLng  = new google.maps.LatLng(this.lat, this.lng);
+
+  this.marker = new google.maps.Marker({
+    position: this.myLatLng,
+    title: this.name,
+  });
+
 }
 
 var ViewModel = function() {
+
+  google.maps.event.addDomListener(window, 'load', initialize());
 
   var self = this;
 
   self.placeList = ko.observableArray([]);
   self.placeListOb = ko.observableArray([]);
   self.searchString = ko.observable("");
+  self.results =  ko.observableArray([]);
 
   initialPlaces.forEach(function(placeItem) {
     self.placeList.push(new Location(placeItem));
@@ -81,20 +91,34 @@ var ViewModel = function() {
   self.currentPlace = ko.observable(self.placeList()[0]);
   console.log(self.currentPlace().name);
 
-
   self.placeListOb = ko.computed(function() {
-    this.results =  ko.observableArray([]);
+
+    // reset markers
+     for (var i = 0; i < self.results().length; i++){
+        console.log(this.results()[i]);
+        self.results()[i].marker.setMap(null);
+      }
+
+    // clear results array
+    self.results.removeAll();
+
     var re = new RegExp(self.searchString(), "i");
       //console.log(re);
       for (var i = 0; i < self.placeList().length; i++) {
         if ( re.test(self.placeList()[i].name) ) {
-          self.results.push(new Marker(self.placeList()[i] ) );
+          self.results.push(self.placeList()[i] );
         }
-        console.log( this.results() );
       }
-      return this.results();
-    }, self);
 
+      for (var i = 0; i < self.results().length; i++){
+        console.log(this.results()[i]);
+        self.results()[i].marker.setMap(map);
+      }
+
+      console.log(self.results() );
+
+      return self.results();
+    }, self);
 
 
   self.doSomething = function(place) {
@@ -103,10 +127,9 @@ var ViewModel = function() {
     console.log("Curent: " + self.currentPlace().name);
   };
 
-
 };
 
-google.maps.event.addDomListener(window, 'load', initialize());
+
 ko.applyBindings(new ViewModel());
 
 
