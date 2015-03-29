@@ -6,8 +6,8 @@ var initialPlaces = [
 },
 
 {
-  name: "Mountain Sun",
-  LatLng: [40.0189209,-105.2748623]
+  name: "The Mountain Sun",
+  LatLng: [40.019139, -105.275275]
 },
 
 {
@@ -18,6 +18,10 @@ var initialPlaces = [
 {
   name: "The Black Cat Bistro",
   LatLng: [40.01786,-105.278416]
+},
+{
+  name: "Oak at 14th",
+  LatLng: [40.018214, -105.276970]
 },
 
 {
@@ -55,7 +59,6 @@ function Marker(data) {
     title: this.name,
   });
 
-  // console.log(marker)
 }
 
 function Location(data) {
@@ -71,6 +74,12 @@ function Location(data) {
     title: this.name,
   });
 
+}
+
+function setAllMap(locations, map) {
+    for (var i = 0; i < locations.length; i++){
+        locations[i].marker.setMap(map);
+    }
 }
 
 var ViewModel = function() {
@@ -91,35 +100,27 @@ var ViewModel = function() {
   self.currentPlace = ko.observable(self.placeList()[0]);
   console.log(self.currentPlace().name);
 
+  // computed list for list view
   self.placeListOb = ko.computed(function() {
 
-    // reset markers
-     for (var i = 0; i < self.results().length; i++){
-        console.log(this.results()[i]);
-        self.results()[i].marker.setMap(null);
-      }
-
-    // clear results array
+    // reset markers and clear objects
+    setAllMap(self.results(), null)
     self.results.removeAll();
 
+    // push matching locations to results
     var re = new RegExp(self.searchString(), "i");
-      //console.log(re);
       for (var i = 0; i < self.placeList().length; i++) {
         if ( re.test(self.placeList()[i].name) ) {
           self.results.push(self.placeList()[i] );
         }
       }
 
-      for (var i = 0; i < self.results().length; i++){
-        console.log(this.results()[i]);
-        self.results()[i].marker.setMap(map);
-      }
-
+      // add filtered map markers
+      setAllMap(self.results(), map)
       console.log(self.results() );
 
       return self.results();
     }, self);
-
 
   self.doSomething = function(place) {
     self.currentPlace(place);
