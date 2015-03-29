@@ -27,11 +27,10 @@ var initialPlaces = [
 ];
 
 var map;
-var markers = [];
 
-function initialize(currentPlace) {
+function initialize() {
 
-  var myCenter = new google.maps.LatLng(currentPlace.lat, currentPlace.lng);
+  var myCenter = new google.maps.LatLng(initialPlaces[0].LatLng[0], initialPlaces[0].LatLng[1]);
 
   var mapProp = {
     center: myCenter,
@@ -45,17 +44,18 @@ function initialize(currentPlace) {
 
 function Marker(data) {
 
-  this.myLatLng  = new google.maps.LatLng(data.lat, data.lng);
+  this.name = data.name;
+  this.lat = data.lat;
+  this.lng = data.lng;
+
+  this.myLatLng  = new google.maps.LatLng(this.lat, this.lng);
 
   var marker = new google.maps.Marker({
     position: this.myLatLng,
-<<<<<<< Updated upstream
-    map: map,
-    title: data.name,
-=======
     title: this.name,
->>>>>>> Stashed changes
   });
+
+  console.log(marker)
 }
 
 function Location(data) {
@@ -73,35 +73,26 @@ var ViewModel = function() {
   self.placeList = ko.observableArray([]);
   self.placeListOb = ko.observableArray([]);
   self.searchString = ko.observable("");
-  self.markers = ko.observableArray([]);
 
   initialPlaces.forEach(function(placeItem) {
     self.placeList.push(new Location(placeItem));
   });
 
-  // set map center to first item in places
-  // change when new item clicked ??
   self.currentPlace = ko.observable(self.placeList()[0]);
   console.log(self.currentPlace().name);
 
 
   self.placeListOb = ko.computed(function() {
-    this.results =  [];
+    this.results =  ko.observableArray([]);
     var re = new RegExp(self.searchString(), "i");
       //console.log(re);
       for (var i = 0; i < self.placeList().length; i++) {
         if ( re.test(self.placeList()[i].name) ) {
-          self.results.push(self.placeList()[i] );
+          self.results.push(new Marker(self.placeList()[i] ) );
         }
-        
-        self.markers = [];
-        this.results.forEach( function(loc) {
-          self.markers.push(new Marker(loc));
-        });
-
-        console.log( this.results);
+        console.log( this.results() );
       }
-      return this.results;
+      return this.results();
     }, self);
 
 
@@ -112,45 +103,10 @@ var ViewModel = function() {
     console.log("Curent: " + self.currentPlace().name);
   };
 
-google.maps.event.addDomListener(window, 'load', initialize(self.currentPlace()));
 
 };
 
-
-// from https://developers.google.com/maps/documentation/javascript/examples/marker-remove
-// Add a marker to the map and push to the array.
-
-function addMarker(location) {
-  var marker = new google.maps.Marker({
-    position: location,
-    map: map
-  });
-  markers.push(marker);
-}
-
-// Sets the map on all markers in the array.
-function setAllMap(map) {
-  for (var i = 0; i < markers.length; i++) {
-    markers[i].setMap(map);
-  }
-}
-
-// Removes the markers from the map, but keeps them in the array.
-function clearMarkers() {
-  setAllMap(null);
-}
-
-// Shows any markers currently in the array.
-function showMarkers() {
-  setAllMap(map);
-}
-
-// Deletes all markers in the array by removing references to them.
-function deleteMarkers() {
-  clearMarkers();
-  markers = [];
-}
-
+google.maps.event.addDomListener(window, 'load', initialize());
 ko.applyBindings(new ViewModel());
 
 
