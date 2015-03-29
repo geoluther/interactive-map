@@ -76,9 +76,9 @@ function Location(data) {
 
 }
 
-function setAllMap(locations, map) {
-    for (var i = 0; i < locations.length; i++){
-        locations[i].marker.setMap(map);
+function setAllMap(markers, map) {
+    for (var i = 0; i < markers.length; i++){
+        markers[i].marker.setMap(map);
     }
 }
 
@@ -93,6 +93,7 @@ var ViewModel = function() {
   self.searchString = ko.observable("");
   self.results =  ko.observableArray([]);
 
+  // load all places into ko array
   initialPlaces.forEach(function(placeItem) {
     self.placeList.push(new Location(placeItem));
   });
@@ -103,7 +104,7 @@ var ViewModel = function() {
   // computed list for list view
   self.placeListOb = ko.computed(function() {
 
-    // reset markers and clear objects
+    // reset markers and clear results array
     setAllMap(self.results(), null)
     self.results.removeAll();
 
@@ -129,7 +130,6 @@ var ViewModel = function() {
   };
 
 };
-
 
 ko.applyBindings(new ViewModel());
 
