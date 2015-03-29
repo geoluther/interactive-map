@@ -49,8 +49,12 @@ function Marker(data) {
 
   var marker = new google.maps.Marker({
     position: this.myLatLng,
+<<<<<<< Updated upstream
     map: map,
     title: data.name,
+=======
+    title: this.name,
+>>>>>>> Stashed changes
   });
 }
 
@@ -79,6 +83,7 @@ var ViewModel = function() {
   // change when new item clicked ??
   self.currentPlace = ko.observable(self.placeList()[0]);
   console.log(self.currentPlace().name);
+
 
   self.placeListOb = ko.computed(function() {
     this.results =  [];
