@@ -42,6 +42,10 @@ function initialize() {
     mapTypeId: google.maps.MapTypeId.ROADMAP
   };
 
+  var infowindow = new google.maps.InfoWindow({
+    content: "some content string"
+  });
+
   map = new google.maps.Map(document.getElementById("googleMap"),mapProp);
 
 }
@@ -104,7 +108,7 @@ var ViewModel = function() {
   // computed list for list view
   self.placeListOb = ko.computed(function() {
 
-    // reset markers and clear results array
+    // clear and remove markers
     setAllMap(self.results(), null)
     self.results.removeAll();
 
@@ -128,6 +132,7 @@ var ViewModel = function() {
     console.log("Name: " + place.name);
     console.log("Curent: " + self.currentPlace().name);
   };
+
 
 };
 
