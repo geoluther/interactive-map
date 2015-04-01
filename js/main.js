@@ -31,6 +31,7 @@ var initialPlaces = [
 ];
 
 var map;
+var infowindow;
 
 function initialize() {
 
@@ -64,6 +65,7 @@ function Marker(data) {
   });
 
 }
+
 
 function Location(data) {
 
@@ -129,13 +131,11 @@ var ViewModel = function() {
 
   self.doSomething = function(place) {
     self.currentPlace(place);
+    infowindow.open(map);
     console.log("Name: " + place.name);
     console.log("Curent: " + self.currentPlace().name);
   };
 
-
 };
 
 ko.applyBindings(new ViewModel());
-
-
