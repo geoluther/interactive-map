@@ -7,6 +7,10 @@ li:hover {
 	cursor: pointer;
 	background-color: #e8e8e8;
 }
+
+li {
+	font-weight: bold;
+}
 /*div {
 	border: 1px red dotted;
 }
