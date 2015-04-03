@@ -58,7 +58,7 @@ var Marker = function(data) {
   var self = this;
 
   self.name = data.name;
-  self.infoWindowContent = data.name;
+  self.infoWindowContent = "<h3><em>" + data.name + "</em></h3>";
   self.myLatLng  = new google.maps.LatLng(data.LatLng[0], data.LatLng[1]);
 
   self.marker = new google.maps.Marker({
@@ -69,7 +69,7 @@ var Marker = function(data) {
   console.log(self.infoWindowContent);
 
   google.maps.event.addListener(self.marker, 'click', function() {
-    infowindow.setContent(self.name);
+    infowindow.setContent(self.infoWindowContent);
     infowindow.open(map, self.marker);
   });
 
@@ -110,9 +110,10 @@ var ViewModel = function() {
     setAllMap(self.results(), null)
     self.results.removeAll();
 
-    // push matching Markers to results
+    // set search string to regex
     var re = new RegExp(self.searchString(), "i");
 
+   // push matching Markers to results
     for (var i = 0; i < self.placeList().length; i++) {
       if ( re.test(self.placeList()[i].name) ) {
         self.results.push(self.placeList()[i] );
@@ -121,7 +122,7 @@ var ViewModel = function() {
 
       // add filtered map markers
       setAllMap(self.results(), map);
-      console.log(self.results() );
+      console.log(self.results());
 
       return self.results();
     }, self);
