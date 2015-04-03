@@ -30,6 +30,7 @@ var initialPlaces = [
 }
 ];
 
+
 var map;
 var infowindow;
 
@@ -43,56 +44,51 @@ function initialize() {
     mapTypeId: google.maps.MapTypeId.ROADMAP
   };
 
-  var infowindow = new google.maps.InfoWindow({
-    content: "some content string"
-  });
+  map = new google.maps.Map(document.getElementById("googleMap"), mapProp);
 
-  map = new google.maps.Map(document.getElementById("googleMap"),mapProp);
-
-}
-
-function Marker(data) {
-
-  this.name = data.name;
-  this.lat = data.lat;
-  this.lng = data.lng;
-
-  this.myLatLng  = new google.maps.LatLng(this.lat, this.lng);
-
-  var marker = new google.maps.Marker({
-    position: this.myLatLng,
-    title: this.name,
+  infowindow = new google.maps.InfoWindow({
+    content: this.infoWindowContent
   });
 
 }
 
 
-function Location(data) {
+var Marker = function(data) {
 
-  this.name = data.name;
-  this.lat = data.LatLng[0];
-  this.lng = data.LatLng[1];
+  var self = this;
 
-  this.myLatLng  = new google.maps.LatLng(this.lat, this.lng);
+  self.name = data.name;
+  self.infoWindowContent = data.name;
+  self.myLatLng  = new google.maps.LatLng(data.LatLng[0], data.LatLng[1]);
 
-  this.marker = new google.maps.Marker({
-    position: this.myLatLng,
-    title: this.name,
+  self.marker = new google.maps.Marker({
+    position: self.myLatLng,
+    title: self.name
+  });
+
+  console.log(self.infoWindowContent);
+
+  google.maps.event.addListener(self.marker, 'click', function() {
+    infowindow.setContent(self.name);
+    infowindow.open(map, self.marker);
   });
 
 }
+
+
 
 function setAllMap(markers, map) {
-    for (var i = 0; i < markers.length; i++){
-        markers[i].marker.setMap(map);
-    }
+  for (var i = 0; i < markers.length; i++){
+    markers[i].marker.setMap(map);
+  }
 }
+
 
 var ViewModel = function() {
 
-  google.maps.event.addDomListener(window, 'load', initialize());
-
   var self = this;
+
+  google.maps.event.addDomListener(window, 'load', initialize());
 
   self.placeList = ko.observableArray([]);
   self.placeListOb = ko.observableArray([]);
@@ -101,7 +97,7 @@ var ViewModel = function() {
 
   // load all places into ko array
   initialPlaces.forEach(function(placeItem) {
-    self.placeList.push(new Location(placeItem));
+    self.placeList.push(new Marker(placeItem));
   });
 
   self.currentPlace = ko.observable(self.placeList()[0]);
@@ -114,26 +110,29 @@ var ViewModel = function() {
     setAllMap(self.results(), null)
     self.results.removeAll();
 
-    // push matching locations to results
+    // push matching Markers to results
     var re = new RegExp(self.searchString(), "i");
-      for (var i = 0; i < self.placeList().length; i++) {
-        if ( re.test(self.placeList()[i].name) ) {
-          self.results.push(self.placeList()[i] );
-        }
+
+    for (var i = 0; i < self.placeList().length; i++) {
+      if ( re.test(self.placeList()[i].name) ) {
+        self.results.push(self.placeList()[i] );
       }
+    }
 
       // add filtered map markers
-      setAllMap(self.results(), map)
+      setAllMap(self.results(), map);
       console.log(self.results() );
 
       return self.results();
     }, self);
 
+
   self.doSomething = function(place) {
     self.currentPlace(place);
-    infowindow.open(map);
     console.log("Name: " + place.name);
     console.log("Curent: " + self.currentPlace().name);
+    infowindow.setContent(place.name);
+    infowindow.open(map, place.marker);
   };
 
 };
