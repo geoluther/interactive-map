@@ -58,8 +58,12 @@ var Marker = function(data) {
   var self = this;
 
   self.name = data.name;
-  self.infoWindowContent = "<h3><em>" + data.name + "</em></h3>";
   self.myLatLng  = new google.maps.LatLng(data.LatLng[0], data.LatLng[1]);
+
+  self.infoWindowContent = data.name + '<img src="https://placeimg.com/120/80/any">';
+  self.infoContent = data.name + '<br><img src="https://maps.googleapis.com/maps/api/streetview?size=120x80&location=' + data.LatLng[0] + ',' + data.LatLng[1] + '"">';
+  console.log(self.streetViewUrl);
+
 
   self.marker = new google.maps.Marker({
     position: self.myLatLng,
@@ -69,7 +73,7 @@ var Marker = function(data) {
   console.log(self.infoWindowContent);
 
   google.maps.event.addListener(self.marker, 'click', function() {
-    infowindow.setContent(self.infoWindowContent);
+    infowindow.setContent(self.infoContent);
     infowindow.open(map, self.marker);
   });
 
@@ -132,7 +136,7 @@ var ViewModel = function() {
     self.currentPlace(place);
     console.log("Name: " + place.name);
     console.log("Curent: " + self.currentPlace().name);
-    infowindow.setContent(place.name);
+    infowindow.setContent(place.infoContent);
     infowindow.open(map, place.marker);
   };
 
