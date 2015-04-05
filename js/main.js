@@ -116,18 +116,17 @@ var ViewModel = function() {
     var re = new RegExp(self.searchString(), "i");
 
    // push matching Markers to results
-   for (var i = 0; i < self.placeList().length; i++) {
-    if ( re.test(self.placeList()[i].name) ) {
-      self.results.push(self.placeList()[i] );
+     for (var i = 0; i < self.placeList().length; i++) {
+      if ( re.test(self.placeList()[i].name) ) {
+        self.results.push(self.placeList()[i] );
+      }
     }
-  }
 
-      // add filtered map markers
-      setAllMap(self.results(), map);
-      console.log(self.results());
-
-      return self.results();
-    }, self);
+    // add filtered map markers
+    setAllMap(self.results(), map);
+    console.log(self.results());
+    return self.results();
+  }, self);
 
 
   self.doSomething = function(place) {
