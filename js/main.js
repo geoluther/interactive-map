@@ -62,8 +62,6 @@ var Marker = function(data) {
 
   self.infoWindowContent = data.name + '<img src="https://placeimg.com/120/80/any">';
   self.infoContent = data.name + '<br><img src="https://maps.googleapis.com/maps/api/streetview?size=120x80&location=' + data.LatLng[0] + ',' + data.LatLng[1] + '"">';
-  console.log(self.streetViewUrl);
-
 
   self.marker = new google.maps.Marker({
     position: self.myLatLng,
