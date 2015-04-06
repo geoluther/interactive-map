@@ -27,28 +27,23 @@
             <div class="container">
                 <div class="row">
 
-                    <div class="col-sm-9 text-center">
+                    <div class="col-sm-12 text-center">
                         <h1>Hallo Strassenkarte!</h1>
                     </div>
                 </div>
 
                 <div class="row">
                     <div class="col-sm-6">
-                        <p>Search: <input data-bind="textInput: searchString"/>
-                         String: <span data-bind="text: searchString"></span></p>
+                        <p>Search: <input data-bind="textInput: searchString"/></p>
                     </div>
                 </div>
 
                 <div class="row">
 
                     <div class="col-sm-3">
-                    <h4>All Places</h4>
-                    <ul data-bind="foreach: placeList">
-                        <li class="place-list" data-bind="text: name, click: $parent.doSomething"></li>
-                    </ul>
 
-                   <h4>Filtered Observable Array</h4>
-                    <ul data-bind="foreach: placeListOb">
+                   <h4>Eat and Drink in Boulder</h4>
+                    <ul data-bind="foreach: filteredPlaces">
                         <li class="place-list" data-bind="text: name, click: $parent.doSomething"></li>
                     </ul>
 

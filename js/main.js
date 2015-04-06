@@ -21,13 +21,20 @@ var initialPlaces = [
 },
 {
   name: "Oak at 14th",
-  LatLng: [40.018214, -105.276970]
+  LatLng: [40.018242, -105.277137]
+},
+
+{
+  name: "Sushi Zanmai",
+  LatLng: [40.019244,-105.279846]
 },
 
 {
   name: "Boulder Theater",
-  LatLng: [40.019059,-105.277234]
+  LatLng: [40.019152, -105.277475]
 }
+
+
 ];
 
 
@@ -60,8 +67,9 @@ var Marker = function(data) {
   self.name = data.name;
   self.myLatLng  = new google.maps.LatLng(data.LatLng[0], data.LatLng[1]);
 
-  self.infoWindowContent = data.name + '<img src="https://placeimg.com/120/80/any">';
-  self.infoContent = data.name + '<br><img src="https://maps.googleapis.com/maps/api/streetview?size=120x80&location=' + data.LatLng[0] + ',' + data.LatLng[1] + '"">';
+  self.infoContent = '<strong>' + data.name + '</strong><br>' +
+  '<img src="https://maps.googleapis.com/maps/api/streetview?size=120x80&location=' +
+  data.LatLng[0] + ',' + data.LatLng[1] + '"">';
 
   self.marker = new google.maps.Marker({
     position: self.myLatLng,
@@ -93,7 +101,7 @@ var ViewModel = function() {
   google.maps.event.addDomListener(window, 'load', initialize());
 
   self.placeList = ko.observableArray([]);
-  self.placeListOb = ko.observableArray([]);
+  self.filteredPlaces = ko.observableArray([]);
   self.searchString = ko.observable("");
   self.results =  ko.observableArray([]);
 
@@ -106,7 +114,7 @@ var ViewModel = function() {
   console.log(self.currentPlace().name);
 
   // computed list for list view
-  self.placeListOb = ko.computed(function() {
+  self.filteredPlaces = ko.computed(function() {
 
     // clear and remove markers
     setAllMap(self.results(), null)
