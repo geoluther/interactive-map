@@ -27,14 +27,15 @@ var myCenter=new google.maps.LatLng(51.508742,-0.120850);
   }
 
 var fourSquare = function() {
-	// userless auth
+	// auth
 	var urlBase = "https://api.foursquare.com/v2/venues/";
-	var search = "search?ll=40.7,-74";
+	var search = "search?ll=40.7,-74"; // latlng format
 	var search2 = "search?query=MountainSun&near=Boulder,CO";
 	var CLIENT_ID = "&client_id=YXBLYUHB43G3YFFFK23AAOO3EXF5KOENLRI5KFLOAE5U3W4E";
 	var CLIENT_SECRET = "&client_secret=VOZ5OM12A1RN5BAFHQOUXN1ZTBSTBZ4V5TWAUIDG2G5MZILH";
 	var version = "&v=20150406";
 	var authString = CLIENT_ID + CLIENT_SECRET + version; 
+	
 	// fill in these vars
 	var url = urlBase + search2 + authString;
 
@@ -55,15 +56,13 @@ var fourSquare = function() {
 		}
 	});
 
-	// console.log("Venue Id: " + VENUE_ID);
 	var VENUE_ID = "479b612df964a520694d1fe3";
 	var tipURL = "https://api.foursquare.com/v2/venues/" + VENUE_ID + "/tips?sort=recent" + authString;
-	console.log(tipURL);
 
 	$.getJSON(tipURL + authString, function(data){
 		console.log(data);
-		var tipText = data.response.tips.items[0].text;
-		$('#foursquare').prepend(tipText);
+		var tipText = "<h4><em>" + data.response.tips.items[3].text + "</em></h4>";
+		$('#tip').append(tipText);
 	});
 };
 
