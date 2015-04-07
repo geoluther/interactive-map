@@ -36,22 +36,28 @@ var initialPlaces = [
 ];
 
 
-var fourSquare = function(marker, locString, latLng) {
+var fourSquare = function(marker) {
   // auth
   var urlBase = "https://api.foursquare.com/v2/venues/";
-  var latLng = "search?ll=" + latLng; // latlng format
-  var searchTxt = "search?query=" + locString + "&near=Boulder,CO";
+  var latLng = "search?ll=" + marker.latLng; // latlng format
+  var searchTxt = "search?query=" + marker.name + "&near=Boulder,CO";
   var CLIENT_ID = "&client_id=YXBLYUHB43G3YFFFK23AAOO3EXF5KOENLRI5KFLOAE5U3W4E";
   var CLIENT_SECRET = "&client_secret=VOZ5OM12A1RN5BAFHQOUXN1ZTBSTBZ4V5TWAUIDG2G5MZILH";
   var version = "&v=20150406";
   var authString = CLIENT_ID + CLIENT_SECRET + version;
   var url = urlBase + searchTxt + authString;
 
-  $.getJSON(url, marker.setFourSquareCat)
+  var category = "foo";
+
+  $.getJSON(url, function(data){
+    category = data.response.venues[0].categories[0].name;
+    console.log(category);
+  })
   .error(function(e) {
-    $('#foursquare').text("Foursquare Data Could Not Be Loaded");
+    console.log("Foursquare Data Could Not Be Loaded");
   });
 
+  return category;
 };
 
 
@@ -81,11 +87,10 @@ var Marker = function(data) {
   self.name = data.name;
   self.myLatLng  = new google.maps.LatLng(data.LatLng[0], data.LatLng[1]);
   //console.log("latlng: " + self.myLatLng);
-  self.fourSquareCat = ko.observable("");
+  //self.fourSquareCat = fourSquare(self);
+  //console.log("callback from fourSquare: " + self.fourSquareCat);
 
-  fourSquare(self, self.name, self.mylatLng);
-
-  self.infoContent = '<strong>' + data.name + self.fourSquareCat() + '</strong><br>' +
+  self.infoContent = '<strong>' + data.name + fourSquare(self) + '</strong><br>' +
   '<img src="https://maps.googleapis.com/maps/api/streetview?size=120x80&location=' +
   self.myLatLng + '">';
 
@@ -98,6 +103,7 @@ var Marker = function(data) {
 
   google.maps.event.addListener(self.marker, 'click', function() {
     infowindow.setContent(self.infoContent);
+    console.log("marker event listen: " + self.name);
     infowindow.open(map, self.marker);
   });
 
