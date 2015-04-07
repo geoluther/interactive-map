@@ -34,8 +34,8 @@ var fourSquare = function() {
 	var CLIENT_ID = "&client_id=YXBLYUHB43G3YFFFK23AAOO3EXF5KOENLRI5KFLOAE5U3W4E";
 	var CLIENT_SECRET = "&client_secret=VOZ5OM12A1RN5BAFHQOUXN1ZTBSTBZ4V5TWAUIDG2G5MZILH";
 	var version = "&v=20150406";
-	var authString = CLIENT_ID + CLIENT_SECRET + version; 
-	
+	var authString = CLIENT_ID + CLIENT_SECRET + version;
+
 	// fill in these vars
 	var url = urlBase + search2 + authString;
 
@@ -43,7 +43,7 @@ var fourSquare = function() {
 		console.log(data);
 		//console.log(data.meta.code);
 		//console.log(data.response.venues[0].name);
-		
+
 		for (var i = 0;	i < data.response.venues.length ; i++) {
 			var name = data.response.venues[i].name;
 			var url = data.response.venues[i].url;
@@ -54,7 +54,10 @@ var fourSquare = function() {
 			// console.log(url);
 			$('#foursquare').append(listItem);
 		}
-	});
+	})
+	.error(function(e) {
+		$('#foursquare').text("Foursquare Data Could Not Be Loaded");
+    });
 
 	var VENUE_ID = "479b612df964a520694d1fe3";
 	var tipURL = "https://api.foursquare.com/v2/venues/" + VENUE_ID + "/tips?sort=recent" + authString;
@@ -63,7 +66,10 @@ var fourSquare = function() {
 		console.log(data);
 		var tipText = "<h4><em>" + data.response.tips.items[3].text + "</em></h4>";
 		$('#tip').append(tipText);
-	});
+	})
+	.error(function(e) {
+		$('#tip').text("Foursquare Data Could Not Be Loaded");
+    });
 };
 
 $(function() {

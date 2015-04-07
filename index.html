@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <title>FEND Iteractive Map</title>
+    <title>Neighborhood Map</title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
@@ -28,7 +28,7 @@
                 <div class="row">
 
                     <div class="col-sm-12 text-center">
-                        <h1>Hallo Strassenkarte!</h1>
+                        <h1>Places to Eat and Drink in Downtown Boulder</h1>
                     </div>
                 </div>
 
@@ -42,7 +42,7 @@
 
                     <div class="col-sm-3">
 
-                   <h4>Eat and Drink in Boulder</h4>
+                   <h4>The List</h4>
                     <ul data-bind="foreach: filteredPlaces">
                         <li class="place-list" data-bind="text: name, click: $parent.doSomething"></li>
                     </ul>
@@ -59,7 +59,6 @@
             <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
             <script>window.jQuery || document.write('<script src="js/vendor/jquery-1.11.2.min.js"><\/script>')</script>
 
-            <script src="js/foursquare-api.js"></script>
             <script src="js/knockout-3.3.0.js"></script>
             <script src="js/plugins.js"></script>
             <script src="js/main.js"></script>
