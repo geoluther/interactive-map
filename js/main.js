@@ -66,10 +66,11 @@ var Marker = function(data) {
 
   self.name = data.name;
   self.myLatLng  = new google.maps.LatLng(data.LatLng[0], data.LatLng[1]);
+  console.log("latlng: " + self.myLatLng);
 
   self.infoContent = '<strong>' + data.name + '</strong><br>' +
   '<img src="https://maps.googleapis.com/maps/api/streetview?size=120x80&location=' +
-  data.LatLng[0] + ',' + data.LatLng[1] + '"">';
+  self.myLatLng + '">';
 
   self.marker = new google.maps.Marker({
     position: self.myLatLng,
