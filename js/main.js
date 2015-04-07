@@ -35,8 +35,6 @@ var initialPlaces = [
   }
 ];
 
-var map;
-var infowindow;
 
 var fourSquare = function(marker, locString, latLng) {
   // auth
@@ -47,7 +45,6 @@ var fourSquare = function(marker, locString, latLng) {
   var CLIENT_SECRET = "&client_secret=VOZ5OM12A1RN5BAFHQOUXN1ZTBSTBZ4V5TWAUIDG2G5MZILH";
   var version = "&v=20150406";
   var authString = CLIENT_ID + CLIENT_SECRET + version;
-
   var url = urlBase + searchTxt + authString;
 
   $.getJSON(url, marker.setFourSquareCat)
@@ -56,7 +53,6 @@ var fourSquare = function(marker, locString, latLng) {
   });
 
 };
-
 
 
 function initialize() {
@@ -85,11 +81,11 @@ var Marker = function(data) {
   self.name = data.name;
   self.myLatLng  = new google.maps.LatLng(data.LatLng[0], data.LatLng[1]);
   //console.log("latlng: " + self.myLatLng);
-  self.fourSquareCat = "foo";
+  self.fourSquareCat = ko.observable("");
 
   fourSquare(self, self.name, self.mylatLng);
 
-  self.infoContent = '<strong>' + data.name + self.fourSquareCat + '</strong><br>' +
+  self.infoContent = '<strong>' + data.name + self.fourSquareCat() + '</strong><br>' +
   '<img src="https://maps.googleapis.com/maps/api/streetview?size=120x80&location=' +
   self.myLatLng + '">';
 
@@ -98,12 +94,6 @@ var Marker = function(data) {
     title: self.name
   });
 
-  Marker.prototype.setFourSquareCat = function(data) {
-    var category = data.response.venues[0].categories[0].name;
-    self.fourSquareCat = category;
-    console.log(category);
-  }
-
   //console.log(self.infoContent);
 
   google.maps.event.addListener(self.marker, 'click', function() {
@@ -111,6 +101,12 @@ var Marker = function(data) {
     infowindow.open(map, self.marker);
   });
 
+}
+
+Marker.prototype.setFourSquareCat = function(data) {
+    var category = data.response.venues[0].categories[0].name;
+    self.fourSquareCat = category;
+    console.log(category);
 }
 
 
@@ -156,11 +152,12 @@ var ViewModel = function() {
     }
   }
 
-    // add filtered map markers
-    setAllMap(self.results(), map);
-    //console.log(self.results());
-    return self.results();
-  }, self);
+  // add filtered map markers
+  setAllMap(self.results(), map);
+  //console.log(self.results());
+  return self.results();
+
+  });
 
 
   self.doSomething = function(place) {
@@ -174,4 +171,6 @@ var ViewModel = function() {
 
 };
 
+var map;
+var infowindow;
 ko.applyBindings(new ViewModel());
