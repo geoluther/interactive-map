@@ -38,7 +38,7 @@ var initialPlaces = [
 var map;
 var infowindow;
 
-var fourSquare = function(locString, latLng) {
+var fourSquare = function(marker, locString, latLng) {
   // auth
   var urlBase = "https://api.foursquare.com/v2/venues/";
   var latLng = "search?ll=" + latLng; // latlng format
@@ -48,15 +48,9 @@ var fourSquare = function(locString, latLng) {
   var version = "&v=20150406";
   var authString = CLIENT_ID + CLIENT_SECRET + version;
 
-
   var url = urlBase + searchTxt + authString;
 
-  $.getJSON(url, function(data) {
-    // console.log(data);
-    //console.log(data.meta.code);
-    console.log(data.response.venues[0].name);
-    console.log(data.response.venues[0].categories[0].name);
-  })
+  $.getJSON(url, marker.setFourSquareCat)
   .error(function(e) {
     $('#foursquare').text("Foursquare Data Could Not Be Loaded");
   });
@@ -91,10 +85,11 @@ var Marker = function(data) {
   self.name = data.name;
   self.myLatLng  = new google.maps.LatLng(data.LatLng[0], data.LatLng[1]);
   //console.log("latlng: " + self.myLatLng);
+  self.fourSquareCat = "foo";
 
-  self.fourSquareResult = fourSquare(self.name, self.myLatLng);
+  fourSquare(self, self.name, self.mylatLng);
 
-  self.infoContent = '<strong>' + data.name + '</strong><br>' +
+  self.infoContent = '<strong>' + data.name + self.fourSquareCat + '</strong><br>' +
   '<img src="https://maps.googleapis.com/maps/api/streetview?size=120x80&location=' +
   self.myLatLng + '">';
 
@@ -102,6 +97,12 @@ var Marker = function(data) {
     position: self.myLatLng,
     title: self.name
   });
+
+  Marker.prototype.setFourSquareCat = function(data) {
+    var category = data.response.venues[0].categories[0].name;
+    self.fourSquareCat = category;
+    console.log(category);
+  }
 
   //console.log(self.infoContent);
 
@@ -113,13 +114,11 @@ var Marker = function(data) {
 }
 
 
-
 function setAllMap(markers, map) {
   for (var i = 0; i < markers.length; i++){
     markers[i].marker.setMap(map);
   }
 }
-
 
 var ViewModel = function() {
 
