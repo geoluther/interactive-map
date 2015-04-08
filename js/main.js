@@ -36,6 +36,10 @@ var initialPlaces = [
 ];
 
 
+function Model() {
+  this.markers = [];
+}
+
 var fourSquare = function(marker) {
   // auth
   var urlBase = "https://api.foursquare.com/v2/venues/";
