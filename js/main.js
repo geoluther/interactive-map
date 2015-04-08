@@ -37,13 +37,11 @@ var initialPlaces = [
 
 
 function Model() {
-  this.markers = ko.observableArray([]);
-  this.filtered = ko.observableArray([]);
+  this.markers = [];
+  this.filtered = [];
 }
 
-mymodel = new Model();
-
-var fourSquare = function(marker) {
+function fourSquare(marker) {
   // auth
   var urlBase = "https://api.foursquare.com/v2/venues/";
   var latLng = "search?ll=" + marker.latLng; // latlng format
@@ -57,7 +55,8 @@ var fourSquare = function(marker) {
   var category = "foo";
 
   $.getJSON(url, function(data){
-    category = data.response.venues[0].categories[0].name;
+    venues = data.response.venues;
+    category = venues[0].categories[0].name;
     console.log(category);
   })
   .error(function(e) {
@@ -65,11 +64,10 @@ var fourSquare = function(marker) {
   });
 
   return category;
-};
+}
 
 
-function initialize() {
-
+function initializeMap() {
   var myCenter = new google.maps.LatLng(initialPlaces[0].LatLng[0], initialPlaces[0].LatLng[1]);
 
   var mapProp = {
@@ -85,15 +83,16 @@ function initialize() {
   });
 }
 
-
 var Marker = function(data) {
 
   var self = this;
+
   self.name = data.name;
+  self.text = data.txt;
   self.myLatLng  = new google.maps.LatLng(data.LatLng[0], data.LatLng[1]);
   self.fourSquareCat = "";
 
-  self.infoContent = '<strong>' + data.name + self.fourSquareCat + '</strong><br>' +
+  self.infoContent = '<strong>' + self.name + "<p>" + self.text + "</p></strong>" +
   '<img src="https://maps.googleapis.com/maps/api/streetview?size=120x80&location=' +
   self.myLatLng + '">';
 
@@ -102,15 +101,12 @@ var Marker = function(data) {
     title: self.name
   });
 
-  //console.log(self.infoContent);
-
   google.maps.event.addListener(self.marker, 'click', function() {
     infowindow.setContent(self.infoContent);
     console.log("marker event listen: " + self.name);
     infowindow.open(map, self.marker);
   });
-
-}
+};
 
 
 function setAllMap(markers, map) {
@@ -122,27 +118,25 @@ function setAllMap(markers, map) {
 var ViewModel = function() {
 
   var self = this;
+  google.maps.event.addDomListener(window, 'load', initializeMap()); 
 
-  google.maps.event.addDomListener(window, 'load', initialize());
-
+  self.myModel = ko.observable(new Model());
   self.searchString = ko.observable("");
   self.results =  ko.observableArray([]);
   self.currentPlace = ko.observable("");
 
-  // load all places into ko array
-  console.log("mymodel.markers: " + mymodel.markers());
-  
+  // load all places into observable array
   initialPlaces.forEach(function(placeItem) {
-    mymodel.markers.push(new Marker(placeItem));
+    placeItem.text = "some text";
+    self.myModel().markers.push(new Marker(placeItem));
   });
 
-  console.log("mymodel.markers: " + mymodel.markers());
+  // console.log("self.myModel.markers: " + self.myModel().markers);
+  self.currentPlace = ko.observable(self.myModel().markers[0]);
+  console.log(self.currentPlace().name);
 
-  self.currentPlace = ko.observable(mymodel.markers()[0]);
-  //console.log(self.currentPlace().name);
-
-  // computed list for list view
-  mymodel.filtered = ko.computed(function() {
+  // computed list for filtred list view
+  self.myModel().filtered = ko.computed(function() {
     // clear and remove markers
     setAllMap(self.results(), null)
     self.results.removeAll();
@@ -151,25 +145,23 @@ var ViewModel = function() {
     var re = new RegExp(self.searchString(), "i");
 
     // push matching Markers to results
-    for (var i = 0; i < mymodel.markers().length; i++) {
-      if ( re.test(mymodel.markers()[i].name) ) {
-        self.results.push(mymodel.markers()[i] );
+    for (var i = 0; i < self.myModel().markers.length; i++) {
+      if ( re.test(self.myModel().markers[i].name) ) {
+        self.results.push(self.myModel().markers[i] );
       }
     }
 
-  // add filtered map markers
-  setAllMap(self.results(), map);
-  //console.log(self.results());
-  return self.results();
+    // add filtered map markers
+    setAllMap(self.results(), map);
+    return self.results();
 
-});
-
+  });
 
   self.doSomething = function(place) {
     self.currentPlace(place);
     //console.log("Name: " + place.name);
     console.log("Curent: " + self.currentPlace().name);
-    map.panTo(place.myLatLng);
+    // map.panTo(place.myLatLng);
     infowindow.setContent(place.infoContent);
     infowindow.open(map, place.marker);
   };
