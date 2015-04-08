@@ -42,11 +42,16 @@
 
                     <div class="col-sm-3">
 
-                   <h4>The List</h4>
-                    <ul data-bind="foreach: filteredPlaces">
+                    <h4>Unfiltered List</h4>
+                    <ul data-bind="foreach: mymodel.markers()">
                         <li class="place-list" data-bind="text: name, click: $parent.doSomething"></li>
                     </ul>
 
+
+                    <h4>Filtered List</h4>
+                    <ul data-bind="foreach: mymodel.filtered()">
+                        <li class="place-list" data-bind="text: name, click: $parent.doSomething"></li>
+                    </ul>
                     </div>
 
                     <div class="col-sm-9">

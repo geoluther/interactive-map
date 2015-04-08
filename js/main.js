@@ -1,44 +1,47 @@
 
 var initialPlaces = [
-  {
-    name: "Bohemian Biergarten",
-    LatLng: [40.0187011, -105.2792224]
-  },
+{
+  name: "Bohemian Biergarten",
+  LatLng: [40.0187011, -105.2792224]
+},
 
-  {
-    name: "The Mountain Sun",
-    LatLng: [40.019139, -105.275275]
-  },
+{
+  name: "The Mountain Sun",
+  LatLng: [40.019139, -105.275275]
+},
 
-  {
-    name: "License No. 1",
-    LatLng: [40.019416, -105.2794457]
-  },
+{
+  name: "License No. 1",
+  LatLng: [40.019416, -105.2794457]
+},
 
-  {
-    name: "Black Cat Bistro",
-    LatLng: [40.01786,-105.278416]
-  },
-  {
-    name: "Oak at 14th",
-    LatLng: [40.018242, -105.277137]
-  },
+{
+  name: "Black Cat Bistro",
+  LatLng: [40.01786,-105.278416]
+},
+{
+  name: "Oak at 14th",
+  LatLng: [40.018242, -105.277137]
+},
 
-  {
-    name: "Sushi Zanmai",
-    LatLng: [40.019244,-105.279846]
-  },
+{
+  name: "Sushi Zanmai",
+  LatLng: [40.019244,-105.279846]
+},
 
-  {
-    name: "Boulder Theater",
-    LatLng: [40.019152, -105.277475]
-  }
+{
+  name: "Boulder Theater",
+  LatLng: [40.019152, -105.277475]
+}
 ];
 
 
 function Model() {
-  this.markers = [];
+  this.markers = ko.observableArray([]);
+  this.filtered = ko.observableArray([]);
 }
+
+mymodel = new Model();
 
 var fourSquare = function(marker) {
   // auth
@@ -80,21 +83,17 @@ function initialize() {
   infowindow = new google.maps.InfoWindow({
     content: this.infoWindowContent
   });
-
 }
 
 
 var Marker = function(data) {
 
   var self = this;
-
   self.name = data.name;
   self.myLatLng  = new google.maps.LatLng(data.LatLng[0], data.LatLng[1]);
-  //console.log("latlng: " + self.myLatLng);
-  //self.fourSquareCat = fourSquare(self);
-  //console.log("callback from fourSquare: " + self.fourSquareCat);
+  self.fourSquareCat = "";
 
-  self.infoContent = '<strong>' + data.name + fourSquare(self) + '</strong><br>' +
+  self.infoContent = '<strong>' + data.name + self.fourSquareCat + '</strong><br>' +
   '<img src="https://maps.googleapis.com/maps/api/streetview?size=120x80&location=' +
   self.myLatLng + '">';
 
@@ -113,12 +112,6 @@ var Marker = function(data) {
 
 }
 
-Marker.prototype.setFourSquareCat = function(data) {
-    var category = data.response.venues[0].categories[0].name;
-    self.fourSquareCat = category;
-    console.log(category);
-}
-
 
 function setAllMap(markers, map) {
   for (var i = 0; i < markers.length; i++){
@@ -132,22 +125,24 @@ var ViewModel = function() {
 
   google.maps.event.addDomListener(window, 'load', initialize());
 
-  self.placeList = ko.observableArray([]);
-  self.filteredPlaces = ko.observableArray([]);
   self.searchString = ko.observable("");
   self.results =  ko.observableArray([]);
+  self.currentPlace = ko.observable("");
 
   // load all places into ko array
+  console.log("mymodel.markers: " + mymodel.markers());
+  
   initialPlaces.forEach(function(placeItem) {
-    self.placeList.push(new Marker(placeItem));
+    mymodel.markers.push(new Marker(placeItem));
   });
 
-  self.currentPlace = ko.observable(self.placeList()[0]);
+  console.log("mymodel.markers: " + mymodel.markers());
+
+  self.currentPlace = ko.observable(mymodel.markers()[0]);
   //console.log(self.currentPlace().name);
 
   // computed list for list view
-  self.filteredPlaces = ko.computed(function() {
-
+  mymodel.filtered = ko.computed(function() {
     // clear and remove markers
     setAllMap(self.results(), null)
     self.results.removeAll();
@@ -155,19 +150,19 @@ var ViewModel = function() {
     // set search string to regex
     var re = new RegExp(self.searchString(), "i");
 
-   // push matching Markers to results
-   for (var i = 0; i < self.placeList().length; i++) {
-    if ( re.test(self.placeList()[i].name) ) {
-      self.results.push(self.placeList()[i] );
+    // push matching Markers to results
+    for (var i = 0; i < mymodel.markers().length; i++) {
+      if ( re.test(mymodel.markers()[i].name) ) {
+        self.results.push(mymodel.markers()[i] );
+      }
     }
-  }
 
   // add filtered map markers
   setAllMap(self.results(), map);
   //console.log(self.results());
   return self.results();
 
-  });
+});
 
 
   self.doSomething = function(place) {
