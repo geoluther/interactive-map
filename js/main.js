@@ -112,6 +112,7 @@ var Marker = function(data) {
 
 function setAllMap(markers, map) {
   for (var i = 0; i < markers.length; i++){
+    console.log(markers[i].marker);
     markers[i].marker.setMap(map);
   }
 }
@@ -119,6 +120,7 @@ function setAllMap(markers, map) {
 var ViewModel = function() {
 
   var self = this;
+
   google.maps.event.addDomListener(window, 'load', initializeMap()); 
 
   self.myModel = ko.observable(new Model());
@@ -127,15 +129,12 @@ var ViewModel = function() {
   self.results =  ko.observableArray([]);
   self.currentPlace = ko.observable("");
 
-
   // load all places into ko array
-
   initialPlaces.forEach(function(placeItem) {
     self.myModel().markers.push(new Marker(placeItem));
   });
 
   // console.log("self.myModel.markers: " + self.myModel().markers);
-
   self.currentPlace = ko.observable(self.myModel().markers[0]);
   console.log(self.currentPlace().name);
   //console.log(self.currentPlace().name);
@@ -160,6 +159,8 @@ var ViewModel = function() {
     setAllMap(self.results(), map);
     return self.results();
   });
+
+  //setAllMap(self.myModel().filtered, map);
 
   self.doSomething = function(place) {
     self.currentPlace(place);
