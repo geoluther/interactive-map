@@ -41,7 +41,8 @@ function Model() {
   this.filtered = [];
 }
 
-function fourSquare(marker) {
+
+var fourSquare = function(marker) {
   // auth
   var urlBase = "https://api.foursquare.com/v2/venues/";
   var latLng = "search?ll=" + marker.latLng; // latlng format
@@ -64,7 +65,7 @@ function fourSquare(marker) {
   });
 
   return category;
-}
+};
 
 
 function initializeMap() {
@@ -121,24 +122,28 @@ var ViewModel = function() {
   google.maps.event.addDomListener(window, 'load', initializeMap()); 
 
   self.myModel = ko.observable(new Model());
+
   self.searchString = ko.observable("");
   self.results =  ko.observableArray([]);
   self.currentPlace = ko.observable("");
 
-  // load all places into observable array
+
+  // load all places into ko array
+
   initialPlaces.forEach(function(placeItem) {
-    placeItem.text = "some text";
     self.myModel().markers.push(new Marker(placeItem));
   });
 
   // console.log("self.myModel.markers: " + self.myModel().markers);
+
   self.currentPlace = ko.observable(self.myModel().markers[0]);
   console.log(self.currentPlace().name);
+  //console.log(self.currentPlace().name);
 
-  // computed list for filtred list view
+  // computed list for list view
   self.myModel().filtered = ko.computed(function() {
     // clear and remove markers
-    setAllMap(self.results(), null)
+    setAllMap(self.results(), null);
     self.results.removeAll();
 
     // set search string to regex
@@ -154,7 +159,6 @@ var ViewModel = function() {
     // add filtered map markers
     setAllMap(self.results(), map);
     return self.results();
-
   });
 
   self.doSomething = function(place) {
