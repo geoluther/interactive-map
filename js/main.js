@@ -131,7 +131,7 @@ var ViewModel = function() {
 
   // load all places into ko array
   console.log("mymodel.markers: " + mymodel.markers());
-  
+
   initialPlaces.forEach(function(placeItem) {
     mymodel.markers.push(new Marker(placeItem));
   });
@@ -158,12 +158,13 @@ var ViewModel = function() {
     }
 
   // add filtered map markers
-  setAllMap(self.results(), map);
+  // setAllMap(self.results(), map);
   //console.log(self.results());
   return self.results();
 
 });
 
+  setAllMap(mymodel.filtered, map);
 
   self.doSomething = function(place) {
     self.currentPlace(place);
