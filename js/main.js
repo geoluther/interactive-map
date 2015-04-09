@@ -37,11 +37,10 @@ var initialPlaces = [
 
 
 function Model() {
-  this.markers = ko.observableArray([]);
-  this.filtered = ko.observableArray([]);
+  this.markers = [];
+  this.filtered = [];
 }
 
-mymodel = new Model();
 
 var fourSquare = function(marker) {
   // auth
@@ -123,6 +122,8 @@ var ViewModel = function() {
 
   var self = this;
 
+  self.myModel = ko.observable(new Model());
+
   google.maps.event.addDomListener(window, 'load', initialize());
 
   self.searchString = ko.observable("");
@@ -130,41 +131,40 @@ var ViewModel = function() {
   self.currentPlace = ko.observable("");
 
   // load all places into ko array
-  console.log("mymodel.markers: " + mymodel.markers());
 
   initialPlaces.forEach(function(placeItem) {
-    mymodel.markers.push(new Marker(placeItem));
+    self.myModel().markers.push(new Marker(placeItem));
   });
 
-  console.log("mymodel.markers: " + mymodel.markers());
+  // console.log("self.myModel.markers: " + self.myModel().markers);
 
-  self.currentPlace = ko.observable(mymodel.markers()[0]);
+
+  self.currentPlace = ko.observable(self.myModel().markers[0]);
   //console.log(self.currentPlace().name);
 
   // computed list for list view
-  mymodel.filtered = ko.computed(function() {
+  self.myModel().filtered = ko.computed(function() {
     // clear and remove markers
-    setAllMap(self.results(), null)
+    setAllMap(self.results(), null);
     self.results.removeAll();
 
     // set search string to regex
     var re = new RegExp(self.searchString(), "i");
 
     // push matching Markers to results
-    for (var i = 0; i < mymodel.markers().length; i++) {
-      if ( re.test(mymodel.markers()[i].name) ) {
-        self.results.push(mymodel.markers()[i] );
+    for (var i = 0; i < self.myModel().markers.length; i++) {
+      if ( re.test(self.myModel().markers[i].name) ) {
+        self.results.push(self.myModel().markers[i] );
       }
     }
 
   // add filtered map markers
-  // setAllMap(self.results(), map);
-  //console.log(self.results());
+  setAllMap(self.results(), map);
+  // console.log(self.results());
   return self.results();
 
 });
 
-  setAllMap(mymodel.filtered, map);
 
   self.doSomething = function(place) {
     self.currentPlace(place);
