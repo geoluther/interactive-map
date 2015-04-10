@@ -38,6 +38,7 @@ var initialPlaces = [
 
 function Model() {
   this.markers = [];
+  this.filtered = [];
 }
 
 
@@ -121,13 +122,8 @@ var ViewModel = function() {
   google.maps.event.addDomListener(window, 'load', initializeMap()); 
 
   self.myModel = ko.observable(new Model());
-
   self.searchString = ko.observable("");
-  self.results =  ko.observableArray([]);
   self.currentPlace = ko.observable("");
-  self.filtered = ko.observableArray([]);
-
-
 
   // load all places into ko array
 
@@ -139,8 +135,9 @@ var ViewModel = function() {
   console.log(self.currentPlace().name);
 
   // computed list for list view
-  self.filtered = ko.computed(function() {
+  self.myModel().filtered = ko.computed(function() {
     // clear and remove markers
+    self.results =  ko.observableArray([]);
     setAllMap(self.results(), null);
     self.results.removeAll();
 
