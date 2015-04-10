@@ -128,6 +128,7 @@ var ViewModel = function() {
   self.filtered = ko.observableArray([]);
 
 
+
   // load all places into ko array
 
   initialPlaces.forEach(function(placeItem) {
