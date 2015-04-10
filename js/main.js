@@ -38,7 +38,6 @@ var initialPlaces = [
 
 function Model() {
   this.markers = [];
-  this.filtered = [];
 }
 
 
@@ -112,7 +111,7 @@ var Marker = function(data) {
 
 function setAllMap(markers, map) {
   for (var i = 0; i < markers.length; i++){
-    console.log(markers[i].marker);
+    // console.log(markers[i].marker);
     markers[i].marker.setMap(map);
   }
 }
@@ -128,6 +127,7 @@ var ViewModel = function() {
   self.searchString = ko.observable("");
   self.results =  ko.observableArray([]);
   self.currentPlace = ko.observable("");
+  self.filtered = ko.observableArray([]);
 
   // load all places into ko array
   initialPlaces.forEach(function(placeItem) {
@@ -138,7 +138,7 @@ var ViewModel = function() {
   console.log(self.currentPlace().name);
 
   // computed list for list view
-  self.myModel().filtered = ko.computed(function() {
+  self.filtered = ko.computed(function() {
     // clear and remove markers
     setAllMap(self.results(), null);
     self.results.removeAll();
