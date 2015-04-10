@@ -134,10 +134,8 @@ var ViewModel = function() {
     self.myModel().markers.push(new Marker(placeItem));
   });
 
-  // console.log("self.myModel.markers: " + self.myModel().markers);
   self.currentPlace = ko.observable(self.myModel().markers[0]);
   console.log(self.currentPlace().name);
-  //console.log(self.currentPlace().name);
 
   // computed list for list view
   self.myModel().filtered = ko.computed(function() {
@@ -164,9 +162,7 @@ var ViewModel = function() {
 
   self.doSomething = function(place) {
     self.currentPlace(place);
-    //console.log("Name: " + place.name);
     console.log("Curent: " + self.currentPlace().name);
-    // map.panTo(place.myLatLng);
     infowindow.setContent(place.infoContent);
     infowindow.open(map, place.marker);
   };
