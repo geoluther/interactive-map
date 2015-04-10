@@ -8,3 +8,16 @@ for example of markers:
 http://jsfiddle.net/t9wcC/
 
 https://developers.google.com/maps/documentation/javascript/examples/marker-remove
+
+todo:
+
+recenter map when list item is clicked
+toggle info window when list itme is clicked?
+
+
+add api.
+
+to add?
+
+yelp reviews
+google street view pics
