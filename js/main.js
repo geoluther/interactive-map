@@ -59,12 +59,11 @@ var fourSquare = function(marker) {
     venues = data.response.venues;
     category = venues[0].categories[0].name;
     console.log(category);
+    marker.txt = category;
   })
   .error(function(e) {
     console.log("Foursquare Data Could Not Be Loaded");
   });
-
-  return category;
 };
 
 
@@ -89,7 +88,7 @@ var Marker = function(data) {
   var self = this;
 
   self.name = data.name;
-  self.text = data.txt;
+  self.text = "foo";
   self.myLatLng  = new google.maps.LatLng(data.LatLng[0], data.LatLng[1]);
   self.fourSquareCat = "";
 
@@ -110,8 +109,11 @@ var Marker = function(data) {
 };
 
 
+
+
 function setAllMap(markers, map) {
   for (var i = 0; i < markers.length; i++){
+    // markers[i].infoContent = "bar";
     markers[i].marker.setMap(map);
   }
 }
@@ -119,14 +121,15 @@ function setAllMap(markers, map) {
 var ViewModel = function() {
 
   var self = this;
+
   google.maps.event.addDomListener(window, 'load', initializeMap()); 
 
   self.myModel = ko.observable(new Model());
+  self.results =  ko.observableArray([]);
   self.searchString = ko.observable("");
   self.currentPlace = ko.observable("");
 
   // load all places into ko array
-
   initialPlaces.forEach(function(placeItem) {
     self.myModel().markers.push(new Marker(placeItem));
   });
@@ -137,7 +140,6 @@ var ViewModel = function() {
   // computed list for list view
   self.myModel().filtered = ko.computed(function() {
     // clear and remove markers
-    self.results =  ko.observableArray([]);
     setAllMap(self.results(), null);
     self.results.removeAll();
 
@@ -164,6 +166,7 @@ var ViewModel = function() {
   };
 
 };
+
 
 var map;
 var infowindow;
