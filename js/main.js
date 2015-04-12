@@ -56,13 +56,16 @@ function fourSquare(marker){
   var category;
   var url;
   var venue;
-  var fsText
+  var fsText;
   var formattedUrl;
+  var hereNow;
 
   $.getJSON(url, function(data){
     // console.log(data);
     venue = data.response.venues[0];
+    console.log(venue);
     category = venue.categories[0].name;
+    hereNow = "Foursquare: " + venue.hereNow.summary;
     
     if (venue.url === undefined) {
       url = "";
@@ -71,13 +74,13 @@ function fourSquare(marker){
     }
 
     formattedUrl = '<a href="' + url + '">' + url + '</a>';
-    fsText = category + '<br>' + formattedUrl;
+    fsText = category + '<br>' + formattedUrl + '<br>' + hereNow;
 
     marker.text = category;
     marker.url  = url;
     marker.fsText = fsText;
 
-    console.log("formatted txt: " + fsText);
+    // console.log("formatted txt: " + fsText);
   })
   .error(function(e) {
     console.log("Foursquare Data Could Not Be Loaded");
