@@ -6,7 +6,7 @@ var initialPlaces = [
 },
 
 {
-  name: "The Mountain Sun",
+  name: "The Mountain Sun Pub and Brewery",
   LatLng: [40.019139, -105.275275]
 },
 
@@ -44,7 +44,6 @@ function Model() {
 
 function fourSquare(marker){
   // auth
-  console.log("fourSquare Called");
   var urlBase = "https://api.foursquare.com/v2/venues/";
   var latLng = "search?ll=" + marker.myLatLng; // latlng format
   var searchTxt = "search?query=" + marker.name + "&near=Boulder,CO";
@@ -54,14 +53,31 @@ function fourSquare(marker){
   var authString = CLIENT_ID + CLIENT_SECRET + version;
   var url = urlBase + searchTxt + authString;
 
-  console.log("marker info: " + marker.myLatLng + marker.name);
   var category;
+  var url;
+  var venue;
+  var fsText
+  var formattedUrl;
 
   $.getJSON(url, function(data){
-    var venues = data.response.venues;
-    category = venues[0].categories[0].name;
+    // console.log(data);
+    venue = data.response.venues[0];
+    category = venue.categories[0].name;
+    
+    if (venue.url === undefined) {
+      url = "";
+    } else {
+      url = venue.url;
+    }
+
+    formattedUrl = '<a href="' + url + '">' + url + '</a>';
+    fsText = category + '<br>' + formattedUrl;
+
     marker.text = category;
-    console.log(category);
+    marker.url  = url;
+    marker.fsText = fsText;
+
+    console.log("formatted txt: " + fsText);
   })
   .error(function(e) {
     console.log("Foursquare Data Could Not Be Loaded");
@@ -90,11 +106,15 @@ function Marker(data) {
   var self = this;
   self.name = data.name;
   self.text;
+  self.url;
+  self.fsText; // foursquare response
+
   self.LatLng = new google.maps.LatLng(data.LatLng[0], data.LatLng[1]);
 
+  // sets value of self.txt from foursquare api call
   fourSquare(self);
 
-  self.infoContent = '<p><strong>' + self.name + '</strong></p>';
+  self.infoContent = '<strong>' + self.name + '</strong><br>';
   self.streetView = '<img src="https://maps.googleapis.com/maps/api/streetview?size=120x80&location=' +
   self.LatLng + '">';
 
@@ -104,8 +124,8 @@ function Marker(data) {
   });
 
   google.maps.event.addListener(self.marker, 'click', function() {
-    infowindow.setContent(self.infoContent + '<p>' + self.text + '</p>' + self.streetView);
-    console.log("marker event listen: " + self.name + " fs text: " + self.text);
+    infowindow.setContent(self.infoContent + '<p>' + self.fsText + '</p>' + self.streetView);
+    console.log("marker event listen: " + self.name + " fs text: " + self.fsText);
     infowindow.open(map, self.marker);
   });
 }
@@ -129,8 +149,7 @@ var ViewModel = function() {
 
   // load all places into ko array
   initialPlaces.forEach(function(placeItem) {
-    var marker_obj = new Marker(placeItem);
-    self.myModel().markers.push(marker_obj);
+    self.myModel().markers.push(new Marker(placeItem));
   });
 
 
@@ -161,7 +180,7 @@ var ViewModel = function() {
   self.doSomething = function(place) {
     self.currentPlace(place);
     console.log("Curent: " + self.currentPlace().name);
-    infowindow.setContent(place.infoContent + '<p>' + place.text + '</p>' + place.streetView);
+    infowindow.setContent(place.infoContent + '<p>' + place.fsText + '</p>' + place.streetView);
     infowindow.open(map, place.marker);
   };
 
@@ -170,12 +189,6 @@ var ViewModel = function() {
 
 var map;
 var infowindow;
-
-var myurlBase = "https://api.foursquare.com/v2/venues/";
-var myCLIENT_ID = "&client_id=YXBLYUHB43G3YFFFK23AAOO3EXF5KOENLRI5KFLOAE5U3W4E";
-var myCLIENT_SECRET = "&client_secret=VOZ5OM12A1RN5BAFHQOUXN1ZTBSTBZ4V5TWAUIDG2G5MZILH";
-var myversion = "&v=20150406";
-var myauthString = myCLIENT_ID + myCLIENT_SECRET + myversion;
 
 $(document).ready(function() {
   ko.applyBindings(new ViewModel());
