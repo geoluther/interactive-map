@@ -61,9 +61,9 @@ function fourSquare(marker){
   var hereNow;
 
   $.getJSON(url, function(data){
-    // console.log(data);
+    // get category and checkins at venue.
     venue = data.response.venues[0];
-    console.log(venue);
+    // console.log(venue);
     category = venue.categories[0].name;
     hereNow = "Foursquare: " + venue.hereNow.summary;
     
@@ -89,6 +89,7 @@ function fourSquare(marker){
 
 
 function initializeMap() {
+  
   var myCenter = new google.maps.LatLng(initialPlaces[0].LatLng[0], initialPlaces[0].LatLng[1]);
 
   var mapProp = {
