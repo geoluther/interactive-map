@@ -177,7 +177,7 @@ var ViewModel = function() {
     return self.results();
   });
 
-  self.doSomething = function(place) {
+  self.setMarker = function(place) {
     self.currentPlace(place);
     console.log("Curent: " + self.currentPlace().name);
     infowindow.setContent(place.infoContent + '<p>' + place.fsText + '</p>' + place.streetView);
