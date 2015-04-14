@@ -116,6 +116,7 @@ function Marker(data) {
   self.name = data.name;
   self.text;
   self.url;
+  self.myLatLng = data.LatLng[0] + ',' + data.LatLng[1];
   self.fsText; // foursquare response
 
   self.LatLng = new google.maps.LatLng(data.LatLng[0], data.LatLng[1]);
