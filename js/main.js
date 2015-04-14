@@ -50,8 +50,11 @@ function Model() {
 function fourSquare(marker){
   // auth
   var urlBase = "https://api.foursquare.com/v2/venues/";
-  var latLng = "search?ll=" + marker.myLatLng; // latlng format
-  var searchTxt = "search?query=" + marker.name + "&near=Boulder,CO";
+  console.log(marker.myLatLng);
+  var latLng = "&ll=" + marker.myLatLng; // latlng format
+  var searchTxt = "search?query=" + marker.name + latLng;
+  console.log("searchTxt: " + searchTxt);
+  //var searchTxt = "search?query=" + marker.name + "&near=Boulder,CO";
   var CLIENT_ID = "&client_id=YXBLYUHB43G3YFFFK23AAOO3EXF5KOENLRI5KFLOAE5U3W4E";
   var CLIENT_SECRET = "&client_secret=VOZ5OM12A1RN5BAFHQOUXN1ZTBSTBZ4V5TWAUIDG2G5MZILH";
   var version = "&v=20150406";
