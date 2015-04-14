@@ -32,6 +32,11 @@ var initialPlaces = [
 {
   name: "Boulder Theater",
   LatLng: [40.019152, -105.277475]
+},
+
+{
+  name: "The Blooze Bar",
+  LatLng: [33.595101, -112.013971]
 }
 ];
 
@@ -66,7 +71,7 @@ function fourSquare(marker){
     // console.log(venue);
     category = venue.categories[0].name;
     hereNow = "Foursquare: " + venue.hereNow.summary;
-    
+
     if (venue.url === undefined) {
       url = "";
     } else {
@@ -89,7 +94,7 @@ function fourSquare(marker){
 
 
 function initializeMap() {
-  
+
   var myCenter = new google.maps.LatLng(initialPlaces[0].LatLng[0], initialPlaces[0].LatLng[1]);
 
   var mapProp = {
@@ -144,7 +149,7 @@ var ViewModel = function() {
 
   var self = this;
 
-  google.maps.event.addDomListener(window, 'load', initializeMap()); 
+  google.maps.event.addDomListener(window, 'load', initializeMap());
 
   self.myModel = ko.observable(new Model());
   self.results =  ko.observableArray([]);
